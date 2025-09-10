@@ -1,0 +1,21 @@
+{
+  "chunks": [
+    {
+      "index": 0,
+      "tags": [
+        "love",
+        "grief",
+        "tech",
+        "dreams",
+        "friendship"
+      ],
+      "textSample": "Hey, I miss you so much. Remember when we used to talk about our dreams?"
+    }
+  ],
+  "emotions": [
+    {
+      "emotion": "wistful",
+      "confidence": 0.9
+    }
+  ]
+}

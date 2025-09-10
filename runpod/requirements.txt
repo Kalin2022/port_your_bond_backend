@@ -1,0 +1,10 @@
+# requirements.txt - Python dependencies for RunPod
+fastapi==0.104.1
+uvicorn==0.24.0
+torch==2.0.1
+transformers==4.35.0
+openai==1.3.0
+numpy==1.24.3
+pandas==2.0.3
+scikit-learn==1.3.0
+requests==2.31.0

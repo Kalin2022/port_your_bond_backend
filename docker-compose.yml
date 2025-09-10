@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  port-your-bond:
+    build: .
+    volumes:
+      - ./your_data:/app/your_data
+      - ./output:/app/output
+    environment:
+      - NODE_ENV=production
+    command: ["ts-node", "wirePipeline.ts"]
+    
+  # Optional: Add a web interface for testing
+  web-interface:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./ui_preview:/usr/share/nginx/html
+    depends_on:
+      - port-your-bond
