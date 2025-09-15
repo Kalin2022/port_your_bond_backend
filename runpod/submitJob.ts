@@ -1,22 +1,28 @@
-import axios from 'axios';
+import 'dotenv/config';
+import { submitRunpodJob } from './submitRunpodJob';
 
-const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY;
-const ENDPOINT_ID = 'your-endpoint-id';
+async function main() {
+  const apiKey = process.env.RUNPOD_API_KEY as string;
+  const templateId = process.env.RUNPOD_TEMPLATE_ID as string;
 
-const inputFileURL = 'https://your-bucket/input/conversation.json';
-
-const response = await axios.post(
-  `https://api.runpod.io/v2/${ENDPOINT_ID}/run`,
-  {
-    input: {
-      fileURL: inputFileURL,
-    },
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${RUNPOD_API_KEY}`,
-    },
+  if (!apiKey || !templateId) {
+    throw new Error('Missing RUNPOD_API_KEY or RUNPOD_TEMPLATE_ID in environment.');
   }
-);
 
-console.log('Job submitted:', response.data);
+  const inputUrl = 'https://your-supabase-url.com/conversations.json';
+
+  const { jobId, status } = await submitRunpodJob({
+    inputUrl,
+    jobParams: { mode: 'rebuildLibrary' },
+    templateId,
+    apiKey,
+    webhookUrl: 'https://yourdomain.com/api/job-complete',
+  });
+
+  console.log('Job submitted:', jobId, status);
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

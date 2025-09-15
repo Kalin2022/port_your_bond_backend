@@ -1,10 +1,11 @@
 // index.ts - Main server entry point
-const express = require('express');
-import processRoute from './processRoute.js';
+import express from 'express';
+import processRoute from './processRoute';
 import { stripeWebhook } from './stripeWebhook';
 import runpodWebhook from './runpodWebhook';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+
 
 // Load environment variables
 dotenv.config();
@@ -27,7 +28,7 @@ app.post('/stripe-webhook', stripeWebhook);
 app.use('/', runpodWebhook);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (req: any, res: any) => {
   res.json({ 
     status: 'healthy', 
     timestamp: new Date().toISOString(),
@@ -36,7 +37,7 @@ app.get('/health', (req, res) => {
 });
 
 // Serve UI preview
-app.get('/', (req, res) => {
+app.get('/', (req: any, res: any) => {
   res.sendFile(path.join(__dirname, '../ui_preview/index.html'));
 });
 
