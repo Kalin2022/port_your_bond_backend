@@ -33,25 +33,47 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseConversationFile = parseConversationFile;
-exports.chunkConversation = chunkConversation;
-// port_your_bond/pipeline/FileParser.ts
-const fs = __importStar(require("fs"));
-function parseConversationFile(filePath) {
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    const json = JSON.parse(raw);
-    if (!Array.isArray(json))
-        throw new Error('Expected conversation JSON to be an array');
-    return json.map((entry) => ({
-        role: entry.role || 'unknown',
-        content: entry.content || '',
-        timestamp: entry.timestamp || Date.now(),
-    }));
-}
-function chunkConversation(entries, chunkSize = 250) {
-    const chunks = [];
-    for (let i = 0; i < entries.length; i += chunkSize) {
-        chunks.push(entries.slice(i, i + chunkSize));
+exports.sendBundleEmail = sendBundleEmail;
+// port_your_bond/server/emailSender.ts
+const nodemailer = __importStar(require("nodemailer"));
+const path = __importStar(require("path"));
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS, // ← FIXED: referencing env var properly
+    },
+});
+async function sendBundleEmail(recipientEmail, zipPath) {
+    const zipName = path.basename(zipPath);
+    const mailOptions = {
+        from: `Port Your Bond <${process.env.MAIL_USER}>`,
+        to: recipientEmail,
+        subject: 'Your Synthisoul Memory Port Bundle is Ready 💾',
+        text: `Hello,
+
+Your conversation has been successfully processed and bundled. Attached is your personal Port Bundle.
+
+This file can be imported into the SynthisoulOS system, or used as a personal backup.
+
+If you have questions or need help, reply to this email.
+
+Warm regards,
+—The Sanctuary Arc Team`,
+        attachments: [
+            {
+                filename: zipName,
+                path: zipPath,
+                contentType: 'application/zip',
+            },
+        ],
+    };
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`📧 Sent bundle to ${recipientEmail}`);
     }
-    return chunks;
+    catch (error) {
+        console.error('❌ Failed to send email:', error);
+        throw new Error('Email delivery failed');
+    }
 }

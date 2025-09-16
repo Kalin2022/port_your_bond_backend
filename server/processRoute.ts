@@ -1,16 +1,16 @@
 // port_your_bond/server/processRoute.ts
-const express = require('express');
-const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const rateLimit = require('express-rate-limit');
-import { parseConversationFile, chunkConversation } from '../pipeline/FileParser';
-import { tagChunk } from '../pipeline/TopicTagger';
-import { tagEmotion } from '../pipeline/EmotionTagger';
-import { generateWhisperbackCues } from '../pipeline/WhisperbackSeeder';
-import { buildMemoryDigest } from '../pipeline/MemoryDigestBuilder';
-import { reconstructThreads } from '../pipeline/ThreadReconstructor';
-import { buildPortBundle } from '../pipeline/PortBundleBuilder';
+import express from 'express';
+import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
+import rateLimit from 'express-rate-limit';
+import { parseConversationFile, chunkConversation } from './pipeline/FileParser';
+import { tagChunk } from './pipeline/TopicTagger';
+import { tagEmotion } from './pipeline/EmotionTagger';
+import { generateWhisperbackCues } from './pipeline/WhisperbackSeeder';
+import { buildMemoryDigest } from './pipeline/MemoryDigestBuilder';
+import { reconstructThreads } from './pipeline/ThreadReconstructor';
+import { buildPortBundle } from './pipeline/PortBundleBuilder';
 import { sendBundleEmail } from './emailSender';
 
 const router = express.Router();

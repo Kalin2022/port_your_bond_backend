@@ -4,32 +4,38 @@
     "description": "Backend API for SynthiSoulOS - Port Your Bond",
     "main": "index.ts",
     "scripts": {
-      "dev": "ts-node-dev index.ts",
-      "start": "ts-node index.ts",
-      "build": "tsc"
+        "dev": "ts-node-dev index.ts",
+        "start": "ts-node index.ts",
+        "build": "tsc"
     },
     "keywords": [
-      "synthisoul",
-      "backend",
-      "api",
-      "port-your-bond"
+        "synthisoul",
+        "backend",
+        "api",
+        "port-your-bond"
     ],
     "author": "Sanctuary Arc",
     "license": "MIT",
     "dependencies": {
-      "axios": "^1.6.0",
-      "body-parser": "^1.20.2",
-      "cors": "^2.8.5",
-      "dotenv": "^16.3.1",
-      "express": "^4.18.2",
-      "nodemailer": "^6.9.8",
-      "supabase": "^2.39.5"
+        "@supabase/supabase-js": "^2.57.4",
+        "@types/archiver": "^6.0.3",
+        "@types/multer": "^2.0.0",
+        "archiver": "^7.0.1",
+        "axios": "^1.6.0",
+        "body-parser": "^1.20.2",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "express-rate-limit": "^8.1.0",
+        "multer": "^2.0.2",
+        "nodemailer": "^6.9.8",
+        "supabase": "^2.39.5"
     },
     "devDependencies": {
-      "@types/express": "^4.17.17",
-      "@types/node": "^20.5.9",
-      "ts-node-dev": "^2.0.0",
-      "typescript": "^5.2.2"
+        "@types/express": "^4.17.17",
+        "@types/node": "^20.5.9",
+        "@types/nodemailer": "^7.0.1",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.2.2"
     }
-  }
-  
+}

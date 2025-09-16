@@ -1,3 +1,5 @@
+import { Request, Response } from 'express';
+
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -31,6 +33,8 @@ var __importStar = (this && this.__importStar) || (function () {
         __setModuleDefault(result, mod);
         return result;
     };
+    export const processRoute = async (req: Request, res: Response) => { ... }
+
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 // port_your_bond/server/processRoute.ts

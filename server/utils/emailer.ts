@@ -38,7 +38,7 @@ const transporter = nodemailer.createTransport(
 );
 
 if (process.env.NODE_ENV !== 'production') {
-  transporter.verify((err) => {
+  transporter.verify((err: any) => {
     if (err) {
       console.error('❌ Transport verify failed:', err.message);
     } else {
