@@ -37,12 +37,19 @@ exports.sendBundleEmail = sendBundleEmail;
 // port_your_bond/server/emailSender.ts
 const nodemailer = __importStar(require("nodemailer"));
 const path = __importStar(require("path"));
+// Gmail SMTP configuration
+// Note: Use your main Gmail account for auth, but send from the alias
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
     auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS, // ← FIXED: referencing env var properly
+        user: process.env.MAIL_AUTH_USER || process.env.MAIL_USER, // Main Gmail account for auth
+        pass: process.env.MAIL_PASS, // App password for main account
     },
+    tls: {
+        rejectUnauthorized: false // Allow self-signed certificates
+    }
 });
 async function sendBundleEmail(recipientEmail, zipPath) {
     const zipName = path.basename(zipPath);
