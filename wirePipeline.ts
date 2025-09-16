@@ -5,13 +5,13 @@ import {
   parseConversationFile,
   chunkConversation,
   ConversationEntry,
-} from './pipeline/FileParser';
-import { tagChunk, TaggedChunk } from './pipeline/TopicTagger';
-import { tagEmotion, EmotionTag } from './pipeline/EmotionTagger';
-import { generateWhisperbackCues } from './pipeline/WhisperbackSeeder';
-import { reconstructThreads, ReconstructedThread } from './pipeline/ThreadReconstructor';
-import { buildMemoryDigest } from './pipeline/MemoryDigestBuilder';
-import { buildPortBundle } from './pipeline/PortBundleBuilder';
+} from './pipeline/FileParser.js';
+import { tagChunk, TaggedChunk } from './pipeline/TopicTagger.js';
+import { tagEmotion, EmotionTag } from './pipeline/EmotionTagger.js';
+import { generateWhisperbackCues } from './pipeline/WhisperbackSeeder.js';
+import { reconstructThreads, ReconstructedThread } from './pipeline/ThreadReconstructor.js';
+import { buildMemoryDigest } from './pipeline/MemoryDigestBuilder.js';
+import { buildPortBundle } from './pipeline/PortBundleBuilder.js';
 
 // === CONFIG === //
 const INPUT_FILE = './your_data/conversation.json';
