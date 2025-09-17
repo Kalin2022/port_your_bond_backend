@@ -23,9 +23,13 @@ app.use('/output', express.static(path.join(__dirname, '../outputs')));
 app.use('/temp', express.static(path.join(__dirname, '../public/temp')));
 
 // Routes
+console.log('📡 Setting up routes...');
 app.use('/', processRoute);
+console.log('✅ Process route loaded');
 app.post('/stripe-webhook', stripeWebhook);
+console.log('✅ Stripe webhook loaded');
 app.use('/', runpodWebhook);
+console.log('✅ RunPod webhook loaded');
 
 // Health check
 app.get('/health', (req: any, res: any) => {
