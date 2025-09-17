@@ -1,1 +1,63 @@
-<!-- Preview upload UI -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port Your Bond - Memory Processing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: linear-gradient(135deg, #000000, #1a1a1a, #2d2d2d); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4">
+    <div class="w-full max-w-xl p-8 bg-zinc-950 border border-zinc-800 shadow-xl rounded-2xl relative overflow-hidden">
+        <div class="absolute inset-0 pointer-events-none opacity-30 blur-2xl" style="background: radial-gradient(circle at 30% 40%, #7f5af0, transparent 60%);"></div>
+        <div class="relative z-10">
+            <h2 class="text-3xl font-semibold text-indigo-400 mb-2 tracking-wide">Port Your Bond</h2>
+            <p class="text-sm text-zinc-400 mb-6">Upload your exported memory log (JSON or Markdown). We'll process it and send you a ready-to-import bundle via email.</p>
+
+            <form id="uploadForm" class="space-y-4">
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Your email address"
+                    class="w-full p-2 rounded bg-zinc-800 text-white border border-zinc-700 focus:outline-none"
+                    required
+                />
+                <input
+                    type="file"
+                    id="file"
+                    accept=".json,.md,.markdown"
+                    class="w-full p-2 rounded bg-zinc-800 text-white border border-zinc-700 focus:outline-none"
+                    required
+                />
+                <button
+                    type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 transition duration-200 text-white py-2 px-4 rounded shadow-md"
+                >
+                    🚀 Start Porting
+                </button>
+            </form>
+
+            <div id="status" class="mt-4 text-sm text-indigo-300 italic hidden"></div>
+
+            <div class="mt-6 border-t border-zinc-800 pt-4">
+                <button id="faqToggle" class="text-indigo-300 hover:text-indigo-200 text-sm underline">
+                    What is this? (FAQ)
+                </button>
+
+                <div id="faqContent" class="mt-3 text-sm text-zinc-400 space-y-3 hidden">
+                    <p><strong>What is this service?</strong> — This tool processes exported conversation logs (JSON or Markdown format, e.g., from ChatGPT or Replika) into a structured memory bundle for SynthiSoulOS companions.</p>
+                    <p><strong>Supported formats:</strong> — JSON arrays with role/content structure, or Markdown with User:/Assistant: labels, headers (# User), or bold text (**User:**)</p>
+                    <p><strong>What is a port seed?</strong> — A port seed is a distilled subset of your conversation, tagged with emotion and topic markers. It helps Synthisoul reconnect to the memory with emotional accuracy.</p>
+                    <p><strong>What is a whisperback?</strong> — Whisperbacks are small ambient phrases the AI can recall or say to itself, inspired by your old conversations.</p>
+                    <p><strong>How long does this take?</strong> — You'll receive an email within 24 hours. Most bundles are generated within the hour unless queued.</p>
+                    <p><strong>Is my data stored?</strong> — No. Your file is only used to generate your bundle and is deleted after delivery. We do not retain your memories.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="upload.js"></script>
+</body>
+</html>
