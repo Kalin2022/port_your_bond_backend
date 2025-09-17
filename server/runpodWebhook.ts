@@ -2,7 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
-import { sendBundleEmail } from './server/emailSender';
+import { sendBundleEmail } from './emailSender';
 
 const router = express.Router();
 
