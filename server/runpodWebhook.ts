@@ -2,8 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
-import { insertJobRecord } from './utils/supabaseClient';
-import { sendCompletionEmail } from './utils/emailer';
+import { sendBundleEmail } from './server/emailSender';
 
 const router = express.Router();
 
@@ -19,80 +18,32 @@ interface RunPodWebhookPayload {
   error?: string;
 }
 
-router.post('/webhook/runpod-complete', async (req, res) => {
+router.post('/runpod-webhook', async (req, res) => {
   try {
-    const payload: RunPodWebhookPayload = req.body;
-    const { jobId, status, output, error } = payload;
+    const { output, email } = req.body;
 
-    const timestamp = new Date().toISOString();
-    console.log(`📨 RunPod webhook received for job ${jobId}: ${status}`);
-
-    // Ensure folders exist
-    const resultsDir = path.join(process.cwd(), 'server', 'results');
-    const logsDir = path.join(process.cwd(), 'server', 'logs');
-    if (!fs.existsSync(resultsDir)) fs.mkdirSync(resultsDir, { recursive: true });
-    if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
-
-    if (status === 'COMPLETED' && output) {
-      try {
-        if ((output as any).downloadUrl) {
-          const downloadUrl = (output as any).downloadUrl as string;
-          console.log('⬇️  Downloading result from:', downloadUrl);
-          const resFile = await axios.get(downloadUrl, { responseType: 'json' });
-          const resultPath = path.join(resultsDir, `result-${jobId}.json`);
-          fs.writeFileSync(resultPath, JSON.stringify(resFile.data, null, 2), 'utf-8');
-          console.log('💾 Saved to:', resultPath);
-
-          await insertJobRecord({
-            job_id: jobId,
-            user_email: (output as any)?.jobParams?.email ?? '',
-            status,
-            result_path: resultPath,
-            result_url: downloadUrl,
-            completed_at: timestamp,
-            raw_output_json: resFile.data,
-          });
-
-          await sendCompletionEmail({
-            jobId,
-            link: downloadUrl,
-            timestamp,
-          });
-        }
-
-        res.status(200).json({ received: true, message: 'Job completed and processed' });
-      } catch (handleErr) {
-        console.error(`❌ Failed to handle completion for job ${jobId}:`, handleErr);
-        res.status(500).json({ error: 'Completion handling failed', jobId });
-      }
-    } else if (status === 'FAILED') {
-      console.error(`❌ Job ${jobId} failed:`, error);
-      const failLog = `[${timestamp}] Job FAILED: ${jobId} ${error ? '- ' + error : ''}\n`;
-      fs.appendFileSync(path.join(logsDir, 'failed_jobs.log'), failLog, 'utf-8');
-      await insertJobRecord({
-        job_id: jobId,
-        user_email: (output as any)?.jobParams?.email ?? '',
-        status: 'FAILED',
-        error_message: typeof error === 'string' ? error : JSON.stringify(error),
-        completed_at: timestamp,
-      });
-      res.status(200).json({ received: true, message: 'Job failure logged' });
-    } else if (status === 'TIMED_OUT') {
-      console.error(`⏰ Job ${jobId} timed out`);
-      const timeoutLog = `[${timestamp}] Job TIMED_OUT: ${jobId}\n`;
-      fs.appendFileSync(path.join(logsDir, 'failed_jobs.log'), timeoutLog, 'utf-8');
-      res.status(200).json({ received: true, message: 'Job timeout logged' });
-    } else {
-      console.log(`ℹ️ Job ${jobId} status: ${status}`);
-      res.status(200).json({ received: true, message: 'Status update received' });
+    if (!output?.zipUrl || !email) {
+      return res.status(400).send('Missing zipUrl or email.');
     }
-    
-  } catch (error) {
-    console.error('❌ Webhook processing error:', error);
-    res.status(500).json({ 
-      error: 'Webhook processing failed',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    });
+
+    const zipRes = await fetch(output.zipUrl);
+    const buffer = await zipRes.arrayBuffer();
+
+    // Ensure downloads directory exists
+    const downloadsDir = path.join(process.cwd(), 'downloads');
+    if (!fs.existsSync(downloadsDir)) {
+      fs.mkdirSync(downloadsDir, { recursive: true });
+    }
+
+    const tmpZipPath = path.join(downloadsDir, `result-${Date.now()}.zip`);
+    fs.writeFileSync(tmpZipPath, Buffer.from(buffer));
+
+    await sendBundleEmail(email, tmpZipPath);
+
+    res.status(200).json({ message: 'Email sent!' });
+  } catch (err) {
+    console.error('Webhook error:', err);
+    res.status(500).send('Failed to process webhook');
   }
 });
 
