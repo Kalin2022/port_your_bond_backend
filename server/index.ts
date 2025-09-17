@@ -36,6 +36,29 @@ app.get('/health', (req: any, res: any) => {
   });
 });
 
+// Debug routes
+app.get('/debug/routes', (req: any, res: any) => {
+  const routes: any[] = [];
+  app._router.stack.forEach((middleware: any) => {
+    if (middleware.route) {
+      routes.push({
+        path: middleware.route.path,
+        methods: Object.keys(middleware.route.methods)
+      });
+    } else if (middleware.name === 'router') {
+      middleware.handle.stack.forEach((handler: any) => {
+        if (handler.route) {
+          routes.push({
+            path: handler.route.path,
+            methods: Object.keys(handler.route.methods)
+          });
+        }
+      });
+    }
+  });
+  res.json({ routes, timestamp: new Date().toISOString() });
+});
+
 // Serve UI preview
 app.get('/', (req: any, res: any) => {
   res.sendFile(path.join(__dirname, '../ui_preview/index.html'));
