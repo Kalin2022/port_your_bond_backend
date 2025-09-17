@@ -27,7 +27,8 @@ export async function submitRunpodJob({ email, filePath, originalName }: {
     input: {
       email,
       fileUrl,
-    }
+    },
+    webhook: "https://port-your-bond-backend.onrender.com/runpod-webhook"
   }, {
     headers: {
       'Authorization': `Bearer ${process.env.RUNPOD_API_KEY}`,
