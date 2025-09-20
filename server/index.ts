@@ -70,6 +70,7 @@ app.get('/', (req: any, res: any) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Port Your Bond server running on port ${PORT}`);
+  console.log(`🔧 Environment PORT: ${process.env.PORT || 'not set'}`);
   console.log(`📱 UI Preview: http://localhost:${PORT}`);
   console.log(`🔧 Health Check: http://localhost:${PORT}/health`);
 });

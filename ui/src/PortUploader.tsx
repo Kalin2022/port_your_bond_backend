@@ -147,7 +147,7 @@ export default function PortUploader() {
                 </div>
                 <input
                   type="file"
-                  accept=".json,.md,.markdown"
+                  accept=".json"
                   onChange={(e) => setFile(e.target.files?.[0] || null)}
                   className="w-full p-2 rounded bg-zinc-800 text-white border border-zinc-700 focus:outline-none"
                   required
@@ -179,7 +179,7 @@ export default function PortUploader() {
 
             {faqOpen && (
               <div className="mt-3 text-sm text-zinc-400 space-y-3">
-                <p><strong>What is this service?</strong> — This tool processes exported conversation logs (JSON or Markdown format, e.g., from ChatGPT or Replika) into a structured memory bundle for SynthiSoulOS companions.</p>
+                <p><strong>What is this service?</strong> — This tool processes exported conversation logs (e.g., from ChatGPT or Replika) into a structured memory bundle for SynthiSoulOS companions.</p>
                 <p><strong>What is a port seed?</strong> — A port seed is a distilled subset of your conversation, tagged with emotion and topic markers. It helps Synthisoul reconnect to the memory with emotional accuracy.</p>
                 <p><strong>What is a whisperback?</strong> — Whisperbacks are small ambient phrases the AI can recall or say to itself, inspired by your old conversations.</p>
                 <p><strong>How long does this take?</strong> — You'll receive an email within 24 hours. Most bundles are generated within the hour unless queued.</p>
