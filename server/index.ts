@@ -13,11 +13,11 @@ dotenv.config();
 const app = express();
 
 // Force port configuration for Render deployment
-console.log('🔍 DEBUG - Raw process.env.PORT:', process.env.PORT);
-console.log('🔍 DEBUG - Type of process.env.PORT:', typeof process.env.PORT);
-const PORT = process.env.PORT ? Number(process.env.PORT) : 10000;
-console.log('🔍 DEBUG - Final PORT value:', PORT);
-console.log('🔍 DEBUG - Type of final PORT:', typeof PORT);
+// Render is incorrectly setting PORT=3000, so we override it
+const PORT = process.env.RENDER_EXTERNAL_PORT ? Number(process.env.RENDER_EXTERNAL_PORT) : 
+             (process.env.NODE_ENV === 'production' ? 10000 : 
+             (process.env.PORT && process.env.PORT !== '3000' ? Number(process.env.PORT) : 10000));
+console.log('🚀 FIXED - Using PORT:', PORT, '(ignoring Render PORT=3000)');
 
 // Middleware
 app.use(express.json());
