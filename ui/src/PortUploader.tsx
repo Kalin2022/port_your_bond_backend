@@ -79,7 +79,8 @@ export default function PortUploader() {
 
     try {
       setStatus('⏳ Uploading and processing...');
-      const res = await axios.post('/start-port', formData);
+      const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://your-render-app-url.onrender.com';
+      const res = await axios.post(`${baseURL}/start-port`, formData);
       if (res.status === 200) {
         setStatus('✅ Success! You will receive a link via email when it\'s ready.');
       } else {
