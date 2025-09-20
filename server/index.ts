@@ -11,7 +11,13 @@ import * as path from 'path';
 dotenv.config();
 
 const app = express();
+
+// Force port configuration for Render deployment
+console.log('🔍 DEBUG - Raw process.env.PORT:', process.env.PORT);
+console.log('🔍 DEBUG - Type of process.env.PORT:', typeof process.env.PORT);
 const PORT = process.env.PORT ? Number(process.env.PORT) : 10000;
+console.log('🔍 DEBUG - Final PORT value:', PORT);
+console.log('🔍 DEBUG - Type of final PORT:', typeof PORT);
 
 // Middleware
 app.use(express.json());
