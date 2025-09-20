@@ -2,11 +2,11 @@
   "name": "port-your-bond",
   "version": "1.0.0",
   "description": "AI-powered conversation processing service for creating port bundles",
-  "main": "wirePipeline.ts",
+  "main": "server/index.ts",
   "scripts": {
-    "start": "node wirePipeline.js",
-    "build": "tsc",
-    "dev": "ts-node wirePipeline.ts",
+    "start": "cd server && npm start",
+    "build": "cd server && npm run build",
+    "dev": "cd server && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
