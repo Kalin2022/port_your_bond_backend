@@ -11,7 +11,7 @@ import * as path from 'path';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 10000;
 
 // Middleware
 app.use(express.json());
