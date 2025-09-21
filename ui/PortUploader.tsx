@@ -22,7 +22,7 @@ export default function PortUploader() {
 
     try {
       setStatus('⏳ Uploading and processing...');
-      const res = await axios.post('/start-port', formData);
+      const res = await axios.post('https://port-your-bond-backend.onrender.com/start-port', formData);
       if (res.status === 200) {
         setStatus('✅ Success! You will receive a link via email when it\'s ready.');
       } else {

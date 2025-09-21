@@ -5,8 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/start-port': 'http://localhost:3000',
-      '/job': 'http://localhost:3000'
+      '/start-port': 'https://port-your-bond-backend.onrender.com',
+      '/job': 'https://port-your-bond-backend.onrender.com'
     }
   },
   resolve: {
