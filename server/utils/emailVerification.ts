@@ -14,7 +14,7 @@ const smtpUser = process.env.SMTP_USER as string | undefined;
 const smtpPass = process.env.SMTP_PASS as string | undefined;
 
 // Create transporter
-const transporter = nodemailer.createTransporter(
+const transporter = nodemailer.createTransport(
   emailProvider === 'smtp'
     ? {
         host: smtpHost,
