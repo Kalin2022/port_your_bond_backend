@@ -1,4 +1,4 @@
-import { submitRunpodJob } from '../runpod/submitRunpodJob';
+import { submitRunpodJob } from './utils/submitRunpodJob';
 import * as fs from 'fs';
 import * as path from 'path';
 
