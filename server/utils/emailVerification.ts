@@ -17,12 +17,12 @@ const smtpPass = process.env.SMTP_PASS as string | undefined;
 const transporter = nodemailer.createTransport(
   emailProvider === 'smtp'
     ? {
-        host: smtpHost,
+        host: smtpHost || 'smtp.gmail.com',
         port: smtpPort ?? 587,
         secure: smtpSecure,
         auth: {
-          user: smtpUser,
-          pass: smtpPass,
+          user: smtpUser || hostEmail,
+          pass: smtpPass || hostEmailPass,
         },
         pool: true,
         maxConnections: 3,
