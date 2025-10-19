@@ -76,9 +76,10 @@ app.post('/send-verification', async (req: any, res: any) => {
     const result = await sendVerificationEmail(email);
     
     res.status(200).json({ 
-      message: 'Verification email sent',
+      message: result.autoVerified ? 'Email auto-verified for testing' : 'Verification email sent',
       email: email,
-      success: result.success
+      success: result.success,
+      autoVerified: result.autoVerified || false
     });
   } catch (error) {
     console.error('Error sending verification email:', error);

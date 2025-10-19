@@ -111,7 +111,7 @@ export async function sendVerificationEmail(email: string): Promise<{ success: b
       verified: true // Auto-verify for testing
     });
     
-    return { success: true, token };
+    return { success: true, token, autoVerified: true };
   }
 }
 
