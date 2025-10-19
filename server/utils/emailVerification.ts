@@ -47,7 +47,7 @@ function generateVerificationToken(): string {
 }
 
 // Send verification email
-export async function sendVerificationEmail(email: string): Promise<{ success: boolean; token?: string }> {
+export async function sendVerificationEmail(email: string): Promise<{ success: boolean; token?: string; autoVerified?: boolean }> {
   try {
     // Generate verification token
     const token = generateVerificationToken();
