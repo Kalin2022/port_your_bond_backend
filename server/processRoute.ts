@@ -18,6 +18,18 @@ router.post('/start-port', upload.single('file'), async (req, res) => {
 
   try {
     const filePath = path.resolve(file.path);
+    
+    // Check if RunPod is configured
+    if (!process.env.RUNPOD_ENDPOINT_ID || !process.env.RUNPOD_API_KEY) {
+      console.log('⚠️ RunPod not configured, simulating job submission for testing');
+      res.status(200).json({
+        message: 'File uploaded successfully! (RunPod not configured - testing mode)',
+        jobId: 'test-job-' + Date.now(),
+        testing: true
+      });
+      return;
+    }
+    
     const jobId = await submitRunpodJob({
       email,
       filePath,
