@@ -1,9 +1,9 @@
 import nodemailer from 'nodemailer';
 import * as crypto from 'crypto';
 
-// Email configuration (reusing your existing setup)
-const hostEmail = process.env.HOST_EMAIL as string;
-const hostEmailPass = process.env.HOST_EMAIL_PASS as string;
+// Email configuration (using your existing Render environment variables)
+const hostEmail = process.env.EMAIL_USER as string;
+const hostEmailPass = process.env.EMAIL_PASS as string;
 const emailProvider = (process.env.EMAIL_PROVIDER || 'gmail').toLowerCase();
 
 // SMTP configuration
@@ -60,8 +60,8 @@ export async function sendVerificationEmail(email: string): Promise<{ success: b
       verified: false
     });
     
-    // Create verification URL (you'll need to update this with your actual domain)
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    // Create verification URL (using your production domain)
+    const baseUrl = process.env.FRONTEND_URL || 'https://sanctuaryarc.com';
     const verificationUrl = `${baseUrl}/verify-email?token=${token}`;
     
     // Send email
