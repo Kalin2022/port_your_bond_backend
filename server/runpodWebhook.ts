@@ -20,9 +20,12 @@ interface RunPodWebhookPayload {
 
 router.post('/runpod-webhook', async (req, res) => {
   try {
+    console.log('📬 RunPod webhook received:', JSON.stringify(req.body, null, 2));
+    
     const { output, email } = req.body;
 
     if (!output?.zipUrl || !email) {
+      console.log('⚠️ Missing zipUrl or email in webhook payload');
       return res.status(400).send('Missing zipUrl or email.');
     }
 
