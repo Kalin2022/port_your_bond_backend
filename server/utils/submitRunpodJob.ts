@@ -23,7 +23,7 @@ export async function submitRunpodJob({ email, filePath, originalName }: {
 
   console.log(`📤 Uploaded to tmpfiles: ${fileUrl}`);
 
-  const runpodRes = await axios.post(`https://api.runpod.io/v2/${process.env.RUNPOD_ENDPOINT_ID}/run`, {
+  const runpodRes = await axios.post(`https://api.runpod.ai/v2/${process.env.RUNPOD_ENDPOINT_ID}/run`, {
     input: {
       email,
       fileUrl,
