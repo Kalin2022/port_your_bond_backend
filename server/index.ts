@@ -49,7 +49,7 @@ app.use((req: any, res: any, next: any) => {
 });
 
 // Serve static files
-app.use('/ui', express.static(path.join(__dirname, '../ui_preview')));
+// app.use('/ui', express.static(path.join(__dirname, '../ui_preview'))); // Disabled - ui_preview directory doesn't exist
 app.use('/output', express.static(path.join(__dirname, '../outputs')));
 app.use('/temp', express.static(path.join(__dirname, '../public/temp')));
 
@@ -208,7 +208,15 @@ app.get('/debug/routes', (req: any, res: any) => {
 
 // Serve UI preview
 app.get('/', (req: any, res: any) => {
-  res.sendFile(path.join(__dirname, '../ui_preview/index.html'));
+  res.json({ 
+    message: 'Port Your Bond API Server',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      upload: '/start-port',
+      verify: '/send-verification'
+    }
+  });
 });
 
 app.listen(PORT, () => {
