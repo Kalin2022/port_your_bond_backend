@@ -1,0 +1,48 @@
+# RunPod Container for SynthiSoul Pipeline
+FROM node:18-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    zip \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install Node.js dependencies
+RUN npm install
+
+# Copy the pipeline directory (THE CRITICAL MISSING PIECE!)
+COPY pipeline/ ./pipeline/
+
+# Copy the wirePipeline files
+COPY wirePipeline.* ./
+
+# Copy the Python Flask app
+COPY runpod/app.py ./
+
+# Install Python dependencies
+RUN pip3 install flask requests
+
+# Create output directory
+RUN mkdir -p /tmp/output
+
+# Compile TypeScript if wirePipeline.ts exists
+RUN if [ -f "wirePipeline.ts" ]; then npx tsc wirePipeline.ts --skipLibCheck || true; fi
+
+# Expose port for health checks
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Start the Flask app
+CMD ["python3", "app.py"]
+

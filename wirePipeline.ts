@@ -14,10 +14,22 @@ import { buildMemoryDigest } from './pipeline/MemoryDigestBuilder.js';
 import { buildPortBundle } from './pipeline/PortBundleBuilder.js';
 
 // === CONFIG === //
-const INPUT_FILE = './your_data/conversation.json';
-const OUTPUT_DIR = './your_data';
+// Parse command line arguments
+const args = process.argv.slice(2);
+const inputIndex = args.indexOf('--input');
+const outputIndex = args.indexOf('--output');
+
+const INPUT_FILE = inputIndex !== -1 && inputIndex + 1 < args.length 
+  ? args[inputIndex + 1] 
+  : './your_data/conversation.json';
+
+const OUTPUT_DIR = outputIndex !== -1 && outputIndex + 1 < args.length
+  ? args[outputIndex + 1]
+  : './your_data';
 
 console.log('🧠 Port Your Bond Pipeline Initiated');
+console.log(`📁 Input: ${INPUT_FILE}`);
+console.log(`📁 Output: ${OUTPUT_DIR}`);
 
 // === Step 1: Parse + Chunk === //
 const parsed: ConversationEntry[] = parseConversationFile(INPUT_FILE);

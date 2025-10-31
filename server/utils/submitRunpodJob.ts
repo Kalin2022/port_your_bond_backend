@@ -18,7 +18,9 @@ export async function submitRunpodJob({ email, filePath, originalName }: {
     headers: form.getHeaders()
   });
 
-  const fileUrl = uploadRes.data?.data?.url;
+  // tmpfiles.org returns both 'url' (HTML page) and 'dl_url' (direct download)
+  // We need the dl_url for direct file access
+  const fileUrl = uploadRes.data?.data?.dl_url || uploadRes.data?.data?.url;
   if (!fileUrl) throw new Error('File upload failed');
 
   console.log(`📤 Uploaded to tmpfiles: ${fileUrl}`);

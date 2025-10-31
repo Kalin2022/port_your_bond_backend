@@ -20,27 +20,16 @@ COPY runpod/package*.json ./runpod/
 RUN npm install
 
 # Install Python dependencies for RunPod
-RUN pip3 install flask requests
+RUN pip3 install --break-system-packages flask requests runpod
 
-# Copy the entire pipeline code
+# Copy the entire project
 COPY . .
-
-# Compile TypeScript
-RUN npx tsc
 
 # Create output directory
 RUN mkdir -p /tmp/output
 
-# Create the Flask app for RunPod
-COPY runpod/app.py /app/app.py
+# Ensure handler is in the right place  
+RUN if [ -f "runpod/handler.py" ]; then mv runpod/handler.py /app/handler.py; fi
 
-# Expose port for health checks
-EXPOSE 8000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
-
-# Start the Flask app
-CMD ["python3", "app.py"]
-1
+# Start the RunPod handler
+CMD ["python3", "handler.py"]
