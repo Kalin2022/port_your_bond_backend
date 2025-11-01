@@ -4,13 +4,43 @@ RunPod Serverless Handler for SynthiSoul Pipeline Processing
 Uses the RunPod SDK to properly handle serverless jobs
 """
 
-import runpod
-import subprocess
-import os
-import requests
+import base64
 import json
+import os
+import subprocess
 import tempfile
-from pathlib import Path
+
+import requests
+import runpod
+
+
+TMPFILES_UPLOAD_URL = "https://tmpfiles.org/api/v1/upload"
+
+
+def upload_bundle(bundle_path: str) -> tuple[str | None, str | None]:
+    """Upload generated bundle to tmpfiles.org and return download, delete URLs."""
+    try:
+        with open(bundle_path, 'rb') as bundle_file:
+            files = {'file': (os.path.basename(bundle_path), bundle_file)}
+            response = requests.post(TMPFILES_UPLOAD_URL, files=files, timeout=60)
+            response.raise_for_status()
+
+        data = response.json().get('data', {})
+        url = data.get('dl_url') or data.get('url')
+        delete_url = data.get('delete_url')
+
+        if url and '/dl/' not in url:
+            url = url.replace('tmpfiles.org/', 'tmpfiles.org/dl/')
+
+        if not url:
+            print("❌ tmpfiles response missing download URL", flush=True)
+            return None, None
+
+        print(f"📤 Bundle uploaded to tmpfiles: {url}")
+        return url, delete_url
+    except Exception as exc:
+        print(f"❌ Failed to upload bundle: {exc}", flush=True)
+        return None, None
 
 def download_file(url: str, local_path: str) -> bool:
     """Download file from URL to local path"""
@@ -54,14 +84,10 @@ def run_pipeline(input_file: str, output_dir: str) -> dict:
         # Look for the generated bundle
         bundle_path = os.path.join(output_dir, 'PORT_BOND_BUNDLE.zip')
         if os.path.exists(bundle_path):
-            # Read the bundle file to return its contents
-            with open(bundle_path, 'rb') as f:
-                bundle_data = f.read()
-            
             return {
                 'success': True,
-                'bundle_data': bundle_data,
-                'bundle_size': len(bundle_data),
+                'bundle_path': bundle_path,
+                'bundle_size': os.path.getsize(bundle_path),
                 'stdout': result.stdout
             }
         else:
@@ -143,16 +169,26 @@ def process_pipeline_job(job):
             
             # Return the bundle data
             bundle_size = result['bundle_size']
+            bundle_path = result['bundle_path']
             print(f"✅ Pipeline completed successfully. Bundle size: {bundle_size} bytes")
-            
-            # For RunPod serverless, we return the bundle as base64
-            import base64
-            bundle_base64 = base64.b64encode(result['bundle_data']).decode('utf-8')
-            
+
+            bundle_url, delete_url = upload_bundle(bundle_path)
+            if not bundle_url:
+                return {
+                    'status': 'error',
+                    'error': 'Failed to upload bundle',
+                    'stdout': result.get('stdout', '')
+                }
+
+            with open(bundle_path, 'rb') as bundle_file:
+                bundle_base64 = base64.b64encode(bundle_file.read()).decode('utf-8')
+
             return {
                 'status': 'completed',
                 'bundle_base64': bundle_base64,
                 'bundle_size': bundle_size,
+                'zipUrl': bundle_url,
+                'zipDeleteUrl': delete_url,
                 'email': email,
                 'timestamp': timestamp,
                 'stdout': result.get('stdout', '')
