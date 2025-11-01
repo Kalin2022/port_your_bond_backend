@@ -32,16 +32,19 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildPortBundle = buildPortBundle;
 // port_your_bond/pipeline/PortBundleBuilder.ts
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
-const archiver = __importStar(require("archiver"));
+const archiver_1 = __importDefault(require("archiver"));
 function buildPortBundle(outputDir, taggedPath, seedPath, digestPath) {
     const zipPath = path.join(outputDir, 'PORT_BOND_BUNDLE.zip');
     const output = fs.createWriteStream(zipPath);
-    const archive = archiver('zip', { zlib: { level: 9 } });
+    const archive = (0, archiver_1.default)('zip', { zlib: { level: 9 } });
     archive.pipe(output);
     archive.file(taggedPath, { name: 'conversation_tagged.json' });
     archive.file(seedPath, { name: 'port_seed.json' });

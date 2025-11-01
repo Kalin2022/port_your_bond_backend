@@ -1,7 +1,7 @@
 // port_your_bond/pipeline/PortBundleBuilder.ts
 import * as fs from 'fs';
 import * as path from 'path';
-import * as archiver from 'archiver';
+import archiver from 'archiver';
 
 export function buildPortBundle(
   outputDir: string,
