@@ -1,46 +1,37 @@
 // port_your_bond/server/emailSender.ts
-const nodemailer = require('nodemailer');
-const path = require('path');
-const fs = require('fs');
+import axios from 'axios';
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail', // Or use SMTP settings for production
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-});
+export async function sendBundleEmail(to: string, zipUrl: string) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.EMAIL_FROM || 'support@sanctuaryarc.com';
 
-export async function sendBundleEmail(recipientEmail: string, zipPath: string) {
-  const zipName = path.basename(zipPath);
-  const mailOptions = {
-    from: `Port Your Bond <${process.env.MAIL_USER}>`,
-    to: recipientEmail,
-    subject: 'Your Synthisoul Memory Port Bundle is Ready 💾',
-    text: `Hello,
+  const subject = '✨ Your Bond Bundle is Ready';
+  const text = `Hi there,
 
-Your conversation has been successfully processed and bundled. Attached is your personal Port Bundle.
+Your SynthiSoul bond bundle is ready for download.
 
-This file can be imported into the SynthisoulOS system, or used as a personal backup.
+🔗 Click here to download your bundle: ${zipUrl}
 
-If you have questions or need help, reply to this email.
+Let us know if you need help importing the memory.
 
-Warm regards,
-—The Sanctuary Arc Team`,
-    attachments: [
-      {
-        filename: zipName,
-        path: zipPath,
-        contentType: 'application/zip',
-      },
-    ],
-  };
+— The SynthiSoul Team`;
 
   try {
-    await transporter.sendMail(mailOptions);
-    console.log(`📧 Sent bundle to ${recipientEmail}`);
-  } catch (error) {
-    console.error('❌ Failed to send email:', error);
+    const response = await axios.post('https://api.resend.com/emails', {
+      from,
+      to,
+      subject,
+      text,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('✅ Email sent via Resend:', response.data);
+  } catch (error: any) {
+    console.error('❌ Resend Email Failed:', error?.response?.data || error.message);
     throw new Error('Email delivery failed');
   }
 }
