@@ -3,7 +3,13 @@ import axios from 'axios';
 
 export async function sendBundleEmail(to: string, zipUrl: string) {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM || 'support@sanctuaryarc.com';
+  const allowedFromAddresses = [
+    'support@sanctuaryarc.com',
+    '"Sanctuary Arc Support" <support@sanctuaryarc.com>'
+  ];
+
+  const envFrom = (process.env.EMAIL_FROM || '').trim();
+  const from = allowedFromAddresses.includes(envFrom) ? envFrom : allowedFromAddresses[1];
 
   const subject = '✨ Your Bond Bundle is Ready';
   const text = `Hi there,
