@@ -5,7 +5,9 @@ export async function sendBundleEmail(to: string, zipUrl: string) {
   const apiKey = process.env.RESEND_API_KEY;
   const allowedFromAddresses = [
     'support@sanctuaryarc.com',
-    '"Sanctuary Arc Support" <support@sanctuaryarc.com>'
+    '"Sanctuary Arc Support" <support@sanctuaryarc.com>',
+    'onboarding@resend.dev',
+    '"Sanctuary Arc Test" <onboarding@resend.dev>'
   ];
 
   const envFrom = (process.env.EMAIL_FROM || '').trim();
